@@ -23,6 +23,7 @@ async def users():
 
 @app.get("/user/{id}")
 async def user(id: int):
+    # Async to keep code consistency
     return await search_user(id)
 
 
