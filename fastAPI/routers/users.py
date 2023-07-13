@@ -17,8 +17,9 @@ async def get_user(id: int):
 
 
 @router.post("/user/", response_model=User, status_code=status.HTTP_200_OK)
-async def post_user(user: User):
-    if type(await search_user(user.id)) == User:
+async def post_user(user: User) -> User:
+    searched_user = await search_user(user.id)
+    if isinstance(searched_user, User):
         return HTTPException(
             status_code=status.HTTP_204_NO_CONTENT,
             detail="User already exists"
@@ -29,7 +30,7 @@ async def post_user(user: User):
 
 
 @router.put("/user/", response_model=User, status_code=status.HTTP_201_CREATED)
-async def put_user(user: User):
+async def put_user(user: User) -> User:
     new_user = User(name="Name6", surname="surname6", id=6)
     found = False
     for i, saved_user in enumerate(list_of_users):
@@ -65,13 +66,13 @@ async def delete_user(id: int):
         )
 
 
-async def search_user(id: int):
-    users = filter(lambda user: user.id == id, list_of_users)
+async def search_user(id: int) -> User:
+    user_with_id = filter(lambda user: user.id == id, list_of_users)
 
-    try:
-        return list(users)[0]
-    except Exception:
+    if not user_with_id:
         return HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User not found"
         )
+
+    return user_with_id

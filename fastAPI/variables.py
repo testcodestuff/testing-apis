@@ -1,4 +1,4 @@
-from types import User
+from user_types import User
 
 users_db = {
     "username1": {
